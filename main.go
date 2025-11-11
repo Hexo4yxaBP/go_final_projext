@@ -1,10 +1,10 @@
 // Command main provides the entrypoint for the scheduler web application.
 //
 // It performs a small amount of startup wiring:
-//  - changes working directory to the repository root so static files under ./web are served
-//  - loads environment variables from a local .env file (if present)
-//  - initializes the SQLite database via pkg/db
-//  - starts the HTTP server returned by pkg/server
+//   - changes working directory to the repository root so static files under ./web are served
+//   - loads environment variables from a local .env file (if present)
+//   - initializes the SQLite database via pkg/db
+//   - starts the HTTP server returned by pkg/server
 package main
 
 import (
@@ -29,13 +29,13 @@ const (
 // ListenAndServe is blocking until the process is stopped.
 func main() {
 	// Make working directory the parent directory so ./web resolves when starting from cmd/.
-	err := os.Chdir("..")
+	/*err := os.Chdir("..")
 
 	if err != nil {
 		log.Fatalf("failed to change directory: %v", err)
 	}
-
-	err = godotenv.Load()
+	*/
+	err := godotenv.Load()
 	if err != nil {
 		log.Printf("failed to load .env file: %v", err)
 	}

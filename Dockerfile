@@ -7,10 +7,9 @@ COPY . .
 RUN go mod download
 
 
-COPY . .
 # Build statically where possible (CGO disabled). Adjust if your sqlite driver requires CGO.
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
-	go build -ldflags='-s -w' -o /app/cmd/todo ./cmd/main.go
+	go build -ldflags='-s -w' -o /app/todo ./main.go
 
 
 FROM ubuntu:latest
@@ -18,10 +17,10 @@ FROM ubuntu:latest
 
 # Create app dirs. The program calls os.Chdir("..") in cmd/main.go so we place the binary
 # in /app/cmd and the web/ directory at /app/web so the working dir becomes /app when it runs.
-WORKDIR /app/cmd
+WORKDIR /app
 
 # Copy binary and static assets from builder
-COPY --from=builder /app/cmd/todo /app/cmd/todo
+COPY --from=builder /app/todo /app/todo
 COPY --from=builder /src/web /app/web
 
 # Expose the default port used by the app
@@ -32,4 +31,4 @@ ENV TODO_PORT=7540 \
 	TODO_DBFILE=./data/scheduler.db \
 	TODO_PASSWORD=Mellon
 
-CMD ["/app/cmd/todo"]
+CMD ["/app/todo"]
