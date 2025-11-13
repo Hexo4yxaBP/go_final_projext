@@ -24,6 +24,7 @@ const (
 	-- index on date to speed up lookups by date
 	CREATE INDEX IF NOT EXISTS idx_scheduler_date ON scheduler(date);
 	`
+	TaskDateFormat = "20060102"
 )
 
 // package-global database handle (keeps one open connection)

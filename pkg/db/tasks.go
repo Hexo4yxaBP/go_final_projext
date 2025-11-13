@@ -16,7 +16,7 @@ func Tasks(tasksCount int, searchString string) ([]*Task, error) {
 	if len(searchString) > 0 {
 		searchDate, err := time.Parse("02.01.2006", searchString)
 		if err == nil {
-			subQuery += fmt.Sprintf(` and date=%s`, searchDate.Format("20060102"))
+			subQuery += fmt.Sprintf(` and date=%s`, searchDate.Format(TaskDateFormat))
 		} else {
 			subQuery += fmt.Sprintf(` and (LOWER(title) LIKE '%%%s%%' or LOWER(comment) LIKE '%%%s%%')`, searchString, searchString)
 		}
@@ -40,6 +40,10 @@ func Tasks(tasksCount int, searchString string) ([]*Task, error) {
 		}
 
 		resp = append(resp, &t)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, err
 	}
 
 	return resp, nil

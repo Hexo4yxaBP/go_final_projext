@@ -23,12 +23,12 @@ WORKDIR /app
 COPY --from=builder /app/todo /app/todo
 COPY --from=builder /src/web /app/web
 
-# Expose the default port used by the app
-EXPOSE 7540
-
 # Defaults for runtime (can be overridden with --env or env_file)
 ENV TODO_PORT=7540 \
 	TODO_DBFILE=./data/scheduler.db \
 	TODO_PASSWORD=Mellon
+
+# Expose the default port used by the app
+EXPOSE ${TODO_PORT}
 
 CMD ["/app/todo"]

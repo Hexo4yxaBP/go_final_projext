@@ -3,7 +3,6 @@ package api
 import (
 	"encoding/json"
 	"net/http"
-	"os"
 
 	"github.com/golang-jwt/jwt"
 )
@@ -29,9 +28,7 @@ func signinHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 
-	pwd := os.Getenv("TODO_PASSWORD")
-
-	if user.Password != pwd {
+	if user.Password != todoPassword {
 		writeJson(w, map[string]string{"error": "incorrect login or password"}, http.StatusUnauthorized)
 		return
 	}
@@ -56,7 +53,7 @@ func signinHandler(w http.ResponseWriter, r *http.Request) {
 func auth(next http.HandlerFunc) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// смотрим наличие пароля
-		pass := os.Getenv("TODO_PASSWORD")
+		pass := todoPassword
 		if len(pass) > 0 {
 			var jwtS string // JWT-токен из куки
 			// получаем куку

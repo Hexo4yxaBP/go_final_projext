@@ -1,17 +1,21 @@
 // Package api exposes HTTP handlers for the scheduler application's JSON API.
 //
 // Handlers are registered by calling Init with a ServeMux. The package reads
-// runtime configuration from environment variables such as TODO_MAXTASKSINRESPONSE.
+// runtime configuration from environment variables.
 package api
 
 import (
 	"encoding/json"
 	"net/http"
 	"os"
-	"strconv"
 )
 
-const DEFAULT_MAX_TASKS = 50
+const (
+	DefaultMaxTasks = 50
+	TaskDateFormat  = "20060102"
+)
+
+var todoPassword string
 
 // Init registers the API endpoints on the provided ServeMux.
 //
@@ -23,25 +27,14 @@ const DEFAULT_MAX_TASKS = 50
 //   - /api/signin
 func Init(mux *http.ServeMux) {
 
+	todoPassword = os.Getenv("TODO_PASSWORD")
+
 	mux.HandleFunc("/api/nextdate", GetNextDateHandler)
 	mux.HandleFunc("/api/task", auth(taskHandler))
 	mux.HandleFunc("/api/task/done", auth(taskDoneHandler))
 	mux.HandleFunc("/api/tasks", auth(tasksHandler))
 	mux.HandleFunc("/api/signin", signinHandler)
 
-}
-
-// getMaxTasks reads TODO_MAXTASKSINRESPONSE and returns the integer value.
-// If the value is missing or invalid, DEFAULT_MAX_TASKS is returned.
-func getMaxTasks() int {
-	maxTasksStr := os.Getenv("TODO_MAXTASKSINRESPONSE")
-	maxTasks, err := strconv.Atoi(maxTasksStr)
-
-	if err != nil || maxTasks == 0 {
-		return DEFAULT_MAX_TASKS
-	}
-
-	return maxTasks
 }
 
 // writeJson serializes 'data' as JSON and writes it to the ResponseWriter with

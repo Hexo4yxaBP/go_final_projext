@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	DEFAULT_PORT = "7540" // Default port to listen on if TODO_PORT is not set.
+	DefaultPort = "7540" // Default port to listen on if TODO_PORT is not set.
 )
 
 type MyServer struct {
@@ -24,13 +24,13 @@ type MyServer struct {
 // InitServer creates and configures an HTTP server instance.
 //
 // The returned *MyServer contains the configured http.Server and a logger. The
-// function reads the TODO_PORT environment variable (falling back to DEFAULT_PORT)
+// function reads the TODO_PORT environment variable (falling back to D)
 // and mounts a file server for ./web and API handlers from pkg/api.
 func InitServer(l *log.Logger) (*MyServer, error) {
 
 	port := os.Getenv("TODO_PORT")
 	if port == "" {
-		port = DEFAULT_PORT
+		port = DefaultPort
 	}
 
 	r := http.NewServeMux()

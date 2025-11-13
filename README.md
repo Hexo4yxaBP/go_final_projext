@@ -16,7 +16,6 @@ Run locally (development)
 ```env
 TODO_PORT=7540
 TODO_DBFILE=./data/scheduler.db
-TODO_MAXTASKSINRESPONSE=50
 TODO_PASSWORD=Mellon
 ```
 

@@ -43,7 +43,7 @@ func GetNextDateHandler(w http.ResponseWriter, r *http.Request) {
 		nowT = time.Now()
 	} else {
 		var err error
-		nowT, err = time.Parse("20060102", now)
+		nowT, err = time.Parse(TaskDateFormat, now)
 		if err != nil {
 			http.Error(w, "Invalid 'now' date format", http.StatusBadRequest)
 			return
@@ -132,7 +132,7 @@ func GetNextDateHandler(w http.ResponseWriter, r *http.Request) {
 //   - (string, error): formatted next date "YYYYMMDD" and nil error on success;
 //     otherwise an empty string and a descriptive error.
 func nextDate(now time.Time, dstart string, repeat string) (string, error) {
-	startT, err := time.Parse("20060102", dstart)
+	startT, err := time.Parse(TaskDateFormat, dstart)
 
 	if err != nil {
 		return "", err
@@ -162,15 +162,10 @@ func nextDate(now time.Time, dstart string, repeat string) (string, error) {
 			return "", err
 		}
 
-		//----- test logic
-		/*if daysDiff == 0 {
-			return startT.Format("20060102"), nil
-		}*/
-		//-----
 		daysToAdd := countPeriod[0] - (daysDiff % countPeriod[0])
 		nextDate := resTime.AddDate(0, 0, daysToAdd)
 
-		return nextDate.Format("20060102"), nil
+		return nextDate.Format(TaskDateFormat), nil
 	case "w":
 
 		dOw := resTime.Weekday()
@@ -203,7 +198,7 @@ func nextDate(now time.Time, dstart string, repeat string) (string, error) {
 
 		nextDate := resTime.AddDate(0, 0, daysToAdd)
 
-		return nextDate.Format("20060102"), nil
+		return nextDate.Format(TaskDateFormat), nil
 	case "m":
 
 		nowDoM := resTime.Day()
@@ -257,14 +252,14 @@ func nextDate(now time.Time, dstart string, repeat string) (string, error) {
 
 		nextDate := time.Date(resTime.Year(), nextMonth, dayToSet, 0, 0, 0, 0, resTime.Location())
 
-		return nextDate.Format("20060102"), nil
+		return nextDate.Format(TaskDateFormat), nil
 	case "y":
 
 		nextDate := time.Date(resTime.Year(), startT.Month(), startT.Day(), 0, 0, 0, 0, resTime.Location())
 		if !nextDate.After(resTime) {
 			nextDate = nextDate.AddDate(1, 0, 0)
 		}
-		return nextDate.Format("20060102"), nil
+		return nextDate.Format(TaskDateFormat), nil
 	default:
 		return "", errors.New("unsupported repeat prefix; use d|w|m|y")
 	}

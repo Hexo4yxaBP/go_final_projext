@@ -12,12 +12,12 @@ type TasksResp struct {
 }
 
 // tasksHandler returns a list of tasks, optionally filtered by a search query.
-// The maximum number of returned tasks is limited by TODO_MAXTASKSINRESPONSE.
+// The maximum number of returned tasks is limited maxTasks.
 func tasksHandler(w http.ResponseWriter, r *http.Request) {
 
 	searchString := r.URL.Query().Get("search")
 
-	tasks, err := db.Tasks(getMaxTasks(), searchString) // в параметре максимальное количество записей
+	tasks, err := db.Tasks(DefaultMaxTasks, searchString) // в параметре максимальное количество записей
 
 	if err != nil {
 		writeJson(w, err.Error(), http.StatusInternalServerError)

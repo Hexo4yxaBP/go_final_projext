@@ -22,7 +22,6 @@ func addTaskHandler(w http.ResponseWriter, r *http.Request) {
 		writeJson(w, map[string]string{"error": err.Error()}, http.StatusBadRequest)
 		return
 	}
-	defer r.Body.Close()
 
 	if len(task.Title) == 0 {
 
@@ -53,16 +52,16 @@ func addTaskHandler(w http.ResponseWriter, r *http.Request) {
 // using nextDate when necessary. It returns an error when parsing fails.
 func checkDate(task *db.Task) error {
 
-	now, err := time.Parse("20060102", time.Now().Format("20060102"))
+	now, err := time.Parse(TaskDateFormat, time.Now().Format(TaskDateFormat))
 	if err != nil {
 		return err
 	}
 
 	if len(task.Date) == 0 {
-		task.Date = now.Format("20060102")
+		task.Date = now.Format(TaskDateFormat)
 	}
 
-	t, err := time.Parse("20060102", task.Date)
+	t, err := time.Parse(TaskDateFormat, task.Date)
 	if err != nil {
 		return err
 	}
@@ -77,7 +76,7 @@ func checkDate(task *db.Task) error {
 
 	if now.After(t) {
 		if len(task.Repeat) == 0 {
-			task.Date = now.Format("20060102")
+			task.Date = now.Format(TaskDateFormat)
 		} else {
 			task.Date = next
 		}
